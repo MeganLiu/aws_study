@@ -1,0 +1,35 @@
+Python task (5 min)
+We have a list of deployments.
+Each item is a tuple.
+First item in the tuple is the date of the deployment.
+Second item is which environment was deployed, production or staging.
+Please write some Python code to print out which environment was deployed most recently.
+Just the environment, production or staging.
+
+from datetime import datetime
+
+deployments = [
+ (datetime.fromisoformat('2021-01-01'), 'production'),
+ (datetime.fromisoformat('2021-07-01'), 'staging'),
+ (datetime.fromisoformat('2021-08-01'), 'staging'),
+ (datetime.fromisoformat('2021-05-01'), 'production'),
+]
+
+# print which environment was deployed last
+
+#### solution , using sorted () by setting the key as first elemet of tuples
+from datetime import datetime
+deployments = [
+ (datetime.fromisoformat('2021-01-01'), 'production'),
+ (datetime.fromisoformat('2021-07-01'), 'staging'),
+ (datetime.fromisoformat('2021-08-01'), 'staging'),
+ (datetime.fromisoformat('2021-05-01'), 'production'),
+]
+
+sorted_value=sorted(deployments, key= lambda p : p[0])
+
+print(sorted_value[3])
+print("env",sorted_value[3][1])
+
+#(datetime.datetime(2021, 8, 1, 0, 0), 'staging')
+# env staging
