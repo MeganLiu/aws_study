@@ -1,0 +1,74 @@
+AWS Organization Policy and Azure Policy
+
+WS Organizations provide central governance and management across AWS accounts. AWS Organization has two type of policy, SCP and management policy.
+
+you can use SCPs (Service Control Policy) to set permission guardrails with the fine-grained control supported in the AWS Identity and Access Management (IAM) policy language.
+
+Specific VM Type
+
+With this SCP, any instance launches not using the t2.micro instance type are denied.
+
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RequireMicroInstanceType",
+      "Effect": "Deny",
+      "Action": "ec2:RunInstances",
+      "Resource": [
+        "arn:aws:ec2:*:*:instance/*"
+      ],
+      "Condition": {
+        "StringNotEquals": {
+          "ec2:InstanceType": "t2.micro"
+        }
+      }
+    }
+  ]
+}
+zure — allow specific SKU virtual machine.
+
+{
+  "properties": {
+    "displayName": "Allowed virtual machine size SKUs",
+    "policyType": "BuiltIn",
+    "mode": "Indexed",
+    "description": "This policy enables you to specify a set of virtual machine size SKUs that your organization can deploy.",
+    "metadata": {
+      "version": "1.0.1",
+      "category": "Compute"
+    },
+    "parameters": {
+      "listOfAllowedSKUs": {
+        "type": "Array",
+        "metadata": {
+          "description": "The list of size SKUs that can be specified for virtual machines.",
+          "displayName": "Allowed Size SKUs",
+          "strongType": "VMSKUs"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Compute/virtualMachines"
+          },
+          {
+            "not": {
+              "field": "Microsoft.Compute/virtualMachines/sku.name",
+              "in": "[parameters('listOfAllowedSKUs')]"
+            }
+          }
+        ]
+      },
+      "then": {
+        "effect": "Deny"
+      }
+    }
+  },
+  "id": "/providers/Microsoft.Authorization/policyDefinitions/cccc23c7-8427-4f53-ad12-b6a63eb452b3",
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "cccc23c7-8427-4f53-ad12-b6a63eb452b3"
+}
